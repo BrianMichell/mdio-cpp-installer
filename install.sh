@@ -4,12 +4,12 @@ script=$0
 INSTALL_DIR=$1
 TAG_VERSION=$2
 
-if [[ -z "$INSTALL_DIR"]]; then
+if [ -z "$INSTALL_DIR" ]; then
     echo "Please select a directory for MDIO to be installed to."
     exit 1
 fi
 
-if [[ -z "$TAG_VERSION"]]; then
+if [ -z "$TAG_VERSION" ]; then
     echo "A version tag was not supplied. Attempting to install the latest version."
     TAG_VERSION="main"
 fi
@@ -27,6 +27,8 @@ fi
 # Copy items required to pre-compile MDIO and deps into the main cmake
 cat ../CMakeLists.txt >> mdio/CMakeLists.txt
 
-./../build_mdio.sh $INSTALL_DIR
+echo "Building MDIO"
+./../build_mdio.sh $INSTALL_DIR $BUILD_ROOT
 
+echo "Installing MDIO"
 ./../install_components.sh $INSTALL_DIR

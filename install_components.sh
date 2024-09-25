@@ -1,11 +1,12 @@
 #!/bin/bash
 
-SRC_DIR="mdio-cpp/build/_deps"
+SRC_DIR="build/_deps"
 INSTALL_DIR=$1
 
+
 mkdir -p $INSTALL_DIR/lib/drivers
-for file in $(cat drivers_list.txt); do
-   driver=$(find mdio-cpp/build/_deps -name $file -print)
+for file in $(cat ../drivers_list.txt); do
+   driver=$(find $SRC_DIR -name $file -print)
    echo installing $driver...
    cp $driver $INSTALL_DIR/lib/drivers
 done

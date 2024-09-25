@@ -3,6 +3,9 @@
 mkdir -p build
 cd build
 
+INSTALL_DIR=$1
+BUILD_ROOT=$2
+
 # standard:
 #    c++17 (-std=c++17)
 # arch:
@@ -24,8 +27,8 @@ cmake \
 #
 #  Run make and make install
 #
-cd $BUILD_ROOT/build/mdio
-make -j
-make -j install
+cd mdio
+make -j 8
+make -j 8 install
 
 exit 0
