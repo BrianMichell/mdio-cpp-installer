@@ -19,6 +19,28 @@ git clone https://github.com/TGSAI/mdio-cpp.git
 cd mdio-cpp
 git checkout $TAG_VERSION
 
+
+# Check if the git checkout was successful
+if [ $? -ne 0 ]; then
+    echo "Failed to checkout tag $TAG_VERSION."
+    exit 1
+fi
+
+# Append "IntelLLVM" to the end of line 10 in the specified file
+# Check if the file exists and has at least 10 lines
+if [ -f "cmake/FindEXT_TENSORSTORE.cmake" ] && [ $(wc -l < cmake/FindEXT_TENSORSTORE.cmake) -ge 10 ]; then
+    # Append "IntelLLVM" to the end of line 10 in the specified file
+    sed -i '10s/$/_IntelLLVM/' cmake/FindEXT_TENSORSTORE.cmake
+     # Check if the sed command was successful
+    if [ $? -ne 0 ]; then
+        echo "Failed to append IntelLLVM to line 10 of cmake/FindEXT_TENSORSTORE.cmake."
+        exit 1
+    fi
+else
+    echo "File cmake/FindEXT_TENSORSTORE.cmake does not exist or does not have at least 10 lines."
+    exit 1
+fi
+
 BUILD_ROOT=$(dirname $(dirname $script))
 if [ "$BUILD_ROOT" = "." ]; then
     BUILD_ROOT=${PWD}

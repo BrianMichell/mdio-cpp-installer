@@ -5,7 +5,7 @@ It is largely a workaround for [this](https://github.com/google/tensorstore/issu
 # Instructions
 1. Clone this repo.
 ```bash
-$ git clone https://github.com/BrianMichell/mdio-cpp-installer.git && cd mdio-cpp-installer
+$ git clone https://github.com/BrianMichell/mdio-cpp-installer.git && git checkout IntelLLVM && cd mdio-cpp-installer
 ```
 2. Select your installation directory.
 3. Select a tag or branch from [mdio-cpp](https://github.com/TGSAI/mdio-cpp/releases)
