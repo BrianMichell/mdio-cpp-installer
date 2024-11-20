@@ -5,6 +5,7 @@ cd build
 
 INSTALL_DIR=$1
 BUILD_ROOT=$2
+CMAKE_FLAGS=${@:3}
 
 # standard:
 #    c++17 (-std=c++17)
@@ -23,7 +24,8 @@ cmake \
         -DCMAKE_BUILD_TYPE=ARCH_SPECIFIC \
         -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
         -DBUILD_VALIDATOR=ON \
-        ../
+        ../ \
+        "$CMAKE_FLAGS"
 #
 #  Run make and make install
 #
