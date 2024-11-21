@@ -26,10 +26,10 @@ fi
 if [[ "$TAG_VERSION" =~ ^- ]]; then
     echo "Did not find a git tag in arguments. Using main branch."
     TAG_VERSION="main"
-    CMAKE_FLAGS=${@:2}
+    CMAKE_FLAGS=("${@:2}")
 else
     shift 2
-    CMAKE_FLAGS=$@
+    CMAKE_FLAGS=("$@")
 fi
 
 if [ -z "$TAG_VERSION" ]; then
