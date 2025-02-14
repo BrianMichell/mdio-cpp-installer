@@ -346,6 +346,8 @@ riegeli::bytes_chain_reader
 riegeli::bytes_cord_reader
 riegeli::bytes_cord_writer
 riegeli::bytes_copy_all
+riegeli::bytes_fd_reader
+riegeli::bytes_fd_writer
 riegeli::bytes_pullable_reader
 riegeli::bytes_read_all
 riegeli::bytes_reader_and_writer
@@ -353,6 +355,7 @@ riegeli::bytes_limiting_reader
 riegeli::bzip2_bzip2_error
 riegeli::bzip2_bzip2_reader
 riegeli::bzip2_bzip2_writer
+riegeli::lines_line_reading
 riegeli::varint_varint_reading
 riegeli::zlib_zlib_error
 riegeli::zlib_zlib_reader

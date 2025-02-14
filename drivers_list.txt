@@ -26,3 +26,4 @@ libtensorstore_kvstore_s3_s3_metadata.a
 libtensorstore_kvstore_s3_s3_request_builder.a
 libtensorstore_kvstore_s3_s3_resource.a
 libtensorstore_kvstore_s3_validate.a
+libtinyxml2_tinyxml2.a
