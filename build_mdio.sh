@@ -30,7 +30,13 @@ cmake \
 #  Run make and make install
 #
 cd mdio
-make -j 8
-make -j 8 install
+
+PROCESSORS=$(nproc)
+# Using 3/4 of the available processors for the build
+# We do this to hopefully eliminate any issues with running out of memory
+BUILD_PROCESSORS=$((PROCESSORS * 3 / 4))
+
+make -j $BUILD_PROCESSORS
+make -j $BUILD_PROCESSORS install
 
 exit 0

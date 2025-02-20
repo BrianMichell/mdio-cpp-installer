@@ -32,6 +32,16 @@ else
     CMAKE_FLAGS=("$@")
 fi
 
+# Check for --curl flag
+CURL_FLAG=false
+for arg in "${CMAKE_FLAGS[@]}"; do
+    if [ "$arg" = "--curl" ]; then
+        CURL_FLAG=true
+        # Remove --curl from CMAKE_FLAGS
+        CMAKE_FLAGS=("${CMAKE_FLAGS[@]/$arg}")
+    fi
+done
+
 if [ -z "$TAG_VERSION" ]; then
     echo "A version tag was not supplied. Attempting to install the latest version."
     TAG_VERSION="main"
@@ -70,6 +80,17 @@ fi
 
 # Copy items required to pre-compile MDIO and deps into the main cmake
 cat ../CMakeLists.txt >> mdio/CMakeLists.txt
+
+# Add curl library configuration if --curl flag is present
+if [ "$CURL_FLAG" = true ]; then
+    echo "
+
+add_library( curl SHARED dummy.cc)
+TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( curl
+CURL::libcurl
+)
+install(TARGETS curl DESTINATION lib)" >> mdio/CMakeLists.txt
+fi
 
 echo "Building MDIO"
 ./../build_mdio.sh $INSTALL_DIR $BUILD_ROOT $CMAKE_FLAGS
