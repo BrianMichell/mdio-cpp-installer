@@ -34,6 +34,19 @@ mdio_static_library(
   tensorstore::driver_zarr_spec
   tensorstore::driver_zarr_zlib_compressor
   tensorstore::driver_zarr_zstd_compressor
+  tensorstore::driver_zarr3_driver
+  tensorstore::driver_zarr3_chunk_cache
+  tensorstore::driver_zarr3_codec
+  tensorstore::driver_zarr3_codec_blosc
+  tensorstore::driver_zarr3_codec_bytes
+  tensorstore::driver_zarr3_codec_codec_chain_spec
+  tensorstore::driver_zarr3_codec_crc32c
+  tensorstore::driver_zarr3_codec_gzip
+  tensorstore::driver_zarr3_codec_sharding_indexed
+  tensorstore::driver_zarr3_codec_transpose
+  tensorstore::driver_zarr3_codec_zstd
+  tensorstore::driver_zarr3_metadata
+  tensorstore::driver_auto
   tensorstore::index_interval
   tensorstore::index_space_add_new_dims_op
   tensorstore::index_space_alignment
@@ -69,13 +82,18 @@ mdio_static_library(
   tensorstore::internal_compression_zlib_compressor
   tensorstore::internal_compression_zstd_compressor
   tensorstore::internal_concurrency_resource
-  tensorstore::internal_container_intrusive_linked_list
+  # AWS internals - needed for S3 support
+  tensorstore::internal_aws_aws_api
+  tensorstore::internal_aws_aws_credentials
+  tensorstore::internal_aws_credentials_common
+  tensorstore::internal_aws_http_mocking
+  tensorstore::internal_aws_tls_ctx
   tensorstore::internal_container_intrusive_red_black_tree
-  tensorstore::internal_cord_util
   tensorstore::internal_data_copy_concurrency_resource
   tensorstore::internal_data_type_endian_conversion
-  tensorstore::internal_digest_sha256
+  tensorstore::internal_digest_sha256  # requires OpenSSL crypto - needed for S3
   tensorstore::internal_dimension_labels
+  tensorstore::internal_driver_kind_registry
   tensorstore::internal_env
   tensorstore::internal_file_io_concurrency_resource
   tensorstore::internal_grid_chunk_key_ranges
@@ -84,11 +102,14 @@ mdio_static_library(
   tensorstore::internal_grid_partition_impl
   tensorstore::internal_grid_storage_statistics
   tensorstore::internal_http
-  tensorstore::internal_http_curl_factory
-  tensorstore::internal_http_curl_handle
-  tensorstore::internal_http_curl_transport
-  tensorstore::internal_http_curl_wrappers
+  tensorstore::internal_http_default_transport
   tensorstore::internal_http_http_header
+  tensorstore::internal_curl_curl_transport
+  tensorstore::internal_curl_curl_handle
+  tensorstore::internal_curl_default_factory
+  tensorstore::internal_curl_curl_factory
+  tensorstore::internal_curl_curl_wrappers
+  tensorstore::internal_cord_util
   tensorstore::internal_irregular_grid
   tensorstore::internal_json
   tensorstore::internal_json_array
@@ -116,15 +137,22 @@ mdio_static_library(
   tensorstore::internal_nditerable_elementwise_output_transform
   tensorstore::internal_nditerable_transformed_array
   tensorstore::internal_nditerable_util
+  # OAuth2 - needed for GCS support
   tensorstore::internal_oauth2
   tensorstore::internal_oauth2_google_auth_provider
   tensorstore::internal_oauth2_google_service_account_auth_provider
   tensorstore::internal_oauth2_oauth2_auth_provider
   tensorstore::internal_oauth2_oauth_utils
   tensorstore::internal_open_mode_spec
+  tensorstore::internal_os_aligned_alloc
   tensorstore::internal_os_error_code
+  tensorstore::internal_os_file_descriptor
   tensorstore::internal_os_file_lister
+  tensorstore::internal_os_file_lock
   tensorstore::internal_os_file_util
+  tensorstore::internal_os_fork_detection
+  tensorstore::internal_os_memory_region
+  tensorstore::internal_os_wstring
   tensorstore::internal_path
   tensorstore::internal_poly_storage
   tensorstore::internal_rate_limiter
@@ -142,34 +170,46 @@ mdio_static_library(
   tensorstore::internal_thread_schedule_at
   tensorstore::internal_thread_task_group_impl
   tensorstore::internal_thread_thread_pool
+  tensorstore::internal_tracing
   tensorstore::internal_unaligned_data_type_functions
   tensorstore::internal_uri_utils
   tensorstore::internal_utf8
   tensorstore::kvstore
   tensorstore::kvstore_byte_range
   tensorstore::kvstore_file
-  tensorstore::kvstore_file
   tensorstore::kvstore_file_util
+  tensorstore::kvstore_generation
+  tensorstore::kvstore_key_range
+  # GCS/S3 kvstore support libraries
+  # tensorstore::kvstore_zarr3_sharding_indexed  # driver - in drivers/
+  tensorstore::kvstore_zarr3_sharding_indexed_key
+  tensorstore::kvstore_zarr3_sharding_indexed_shard_format
+  tensorstore::kvstore_auto_detect  # provides AutoDetectFormat (needed for file driver)
+  # tensorstore::kvstore_file_file_resource  # driver - in drivers/
+  # GCS support
   tensorstore::kvstore_gcs_gcs_resource
   tensorstore::kvstore_gcs_http
   tensorstore::kvstore_gcs_http_gcs_resource
-  tensorstore::kvstore_generation
+  tensorstore::kvstore_gcs_http_shared_auth_provider
+  tensorstore::kvstore_gcs_validate
   tensorstore::kvstore_http_byte_range_util
-  tensorstore::kvstore_key_range
-  tensorstore::kvstore_memory
+  # S3 support
   tensorstore::kvstore_s3
+  tensorstore::kvstore_s3_aws_credentials_resource
+  tensorstore::kvstore_s3_aws_credentials_spec
   tensorstore::kvstore_s3_s3_endpoint
+  tensorstore::kvstore_s3_s3_metadata
   tensorstore::kvstore_s3_s3_request_builder
   tensorstore::kvstore_s3_s3_resource
   tensorstore::kvstore_s3_validate
   tensorstore::open_mode
+  tensorstore::open_options
   tensorstore::progress
   tensorstore::rank
   tensorstore::resize_options
   tensorstore::schema
   tensorstore::serialization
   tensorstore::serialization_absl_time
-  tensorstore::serialization_function
   tensorstore::serialization_json
   tensorstore::serialization_registry
   tensorstore::spec
@@ -178,16 +218,17 @@ mdio_static_library(
   tensorstore::strided_layout
   tensorstore::tensorstore
   tensorstore::transaction
+  tensorstore::util_bit_vec
   tensorstore::util_constant_vector
   tensorstore::util_element_pointer
   tensorstore::util_future
   tensorstore::util_iterate
   tensorstore::util_quote_string
+  tensorstore::util_result
   tensorstore::util_status
   tensorstore::util_stop_token
   tensorstore::util_unit
   tensorstore::util_utf8_string
-  tensorstore::virtual_chunked
   tensorstore::internal_log_verbose_flag
 )
 install(TARGETS tensorstore DESTINATION lib)  
@@ -208,9 +249,6 @@ ENDMACRO ()
 
 add_library( absl SHARED dummy.cc)
 TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE (absl
-absl::bad_any_cast_impl
-absl::bad_optional_access
-absl::bad_variant_access
 absl::base
 absl::city
 absl::civil_time
@@ -224,11 +262,12 @@ absl::crc_cord_state
 absl::crc_cpu_detect
 absl::crc_internal
 absl::debugging_internal
+absl::decode_rust_punycode
 absl::demangle_internal
+absl::demangle_rust
 absl::examine_stack
 absl::exponential_biased
 absl::failure_signal_handler
-absl::flags
 absl::flags_commandlineflag
 absl::flags_commandlineflag_internal
 absl::flags_config
@@ -255,14 +294,15 @@ absl::log_internal_globals
 absl::log_internal_log_sink_set
 absl::log_internal_message
 absl::log_internal_nullguard
+absl::log_internal_fnmatch
 absl::log_internal_proto
+absl::log_internal_structured_proto
 absl::log_severity
 absl::log_sink
-absl::low_level_hash
 absl::malloc_internal
 absl::random_distributions
+absl::random_internal_entropy_pool
 absl::random_internal_platform
-absl::random_internal_pool_urbg
 absl::random_internal_randen
 absl::random_internal_randen_hwaes
 absl::random_internal_randen_hwaes_impl
@@ -278,6 +318,7 @@ absl::status
 absl::statusor
 absl::str_format_internal
 absl::strerror
+absl::string_view
 absl::strings
 absl::strings_internal
 absl::symbolize
@@ -285,6 +326,9 @@ absl::synchronization
 absl::throw_delegate
 absl::time
 absl::time_zone
+absl::tracing_internal
+absl::utf8_for_code_point
+absl::vlog_config_internal
 )
 install(TARGETS absl DESTINATION lib)  
 
@@ -297,9 +341,8 @@ install(TARGETS bzip2 DESTINATION lib)
 add_library( blosc SHARED dummy.cc)
 TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( blosc
 Blosc::blosc
-Blosc::shuffle
 Blosc::shuffle_avx2
-Blosc::shuffle_generic
+Blosc::shuffle_common
 Blosc::shuffle_sse2
 )
 install(TARGETS blosc DESTINATION lib)  
@@ -328,33 +371,39 @@ TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( riegeli
 riegeli::base_assert
 riegeli::base_background_cleaning
 riegeli::base_buffer
-riegeli::base_chain
+riegeli::base_byte_fill
+riegeli::base_chain_and_external_ref
 riegeli::base_cord_utils
+riegeli::base_debug
+riegeli::base_external_data
 riegeli::base_memory_estimator
 riegeli::base_object
 riegeli::base_parallelism
-riegeli::base_recycling_pool
 riegeli::base_shared_buffer
 riegeli::base_sized_shared_buffer
 riegeli::base_status
+riegeli::base_stream_utils
 riegeli::base_string_utils
-riegeli::base_zeros
 riegeli::bytes_buffer_options
 riegeli::bytes_buffered_reader
 riegeli::bytes_buffered_writer
-riegeli::bytes_chain_reader
 riegeli::bytes_cord_reader
 riegeli::bytes_cord_writer
 riegeli::bytes_copy_all
 riegeli::bytes_fd_reader
 riegeli::bytes_fd_writer
+riegeli::bytes_limiting_reader
+riegeli::bytes_null_writer
 riegeli::bytes_pullable_reader
 riegeli::bytes_read_all
 riegeli::bytes_reader_and_writer
-riegeli::bytes_limiting_reader
+riegeli::bytes_wrapping_writer
 riegeli::bzip2_bzip2_error
 riegeli::bzip2_bzip2_reader
 riegeli::bzip2_bzip2_writer
+riegeli::digests_digester_handle
+riegeli::digests_digesting_reader
+riegeli::digests_digesting_writer
 riegeli::lines_line_reading
 riegeli::varint_varint_reading
 riegeli::zlib_zlib_error
@@ -375,5 +424,57 @@ install(TARGETS snappy DESTINATION lib)
 add_library( zlib SHARED dummy.cc)
 TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( zlib
 ZLIB::ZLIB
+ZLIB::zlib_impl
 )
 install(TARGETS zlib DESTINATION lib)
+
+# Additional third-party libraries needed for GCS/S3 support
+# If CMake can't find these targets, check tensorstore's CMake for correct names
+
+add_library( zstd SHARED dummy.cc)
+TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( zstd
+Zstd_zstd
+)
+install(TARGETS zstd DESTINATION lib)
+
+add_library( brotli SHARED dummy.cc)
+TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( brotli
+Brotli::brotlidec
+Brotli::brotlicommon
+)
+install(TARGETS brotli DESTINATION lib)
+
+add_library( nghttp2 SHARED dummy.cc)
+TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( nghttp2
+NGHTTP2::nghttp2_impl
+)
+install(TARGETS nghttp2 DESTINATION lib)
+
+add_library( curl_lib SHARED dummy.cc)
+TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( curl_lib
+CURL::libcurl
+)
+install(TARGETS curl_lib DESTINATION lib)
+
+add_library( tinyxml2 SHARED dummy.cc)
+TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( tinyxml2
+tinyxml2::tinyxml2
+)
+install(TARGETS tinyxml2 DESTINATION lib)
+
+# AWS C SDK libraries - needed for S3 support
+# Target naming follows pattern: aws_c_<lib>_aws_c_<lib>
+add_library( aws_libs SHARED dummy.cc)
+TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( aws_libs
+aws_c_common_aws_c_common
+aws_c_common_external_cjson
+aws_c_common_external_libcbor
+aws_c_sdkutils_aws_c_sdkutils
+aws_c_cal_aws_c_cal
+aws_c_io_aws_c_io
+aws_c_compression_aws_c_compression
+aws_c_http_aws_c_http
+aws_c_auth_aws_c_auth
+s2n_tls_s2n_tls_impl
+)
+install(TARGETS aws_libs DESTINATION lib)

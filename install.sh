@@ -44,10 +44,11 @@ done
 
 if [ -z "$TAG_VERSION" ]; then
     echo "A version tag was not supplied. Attempting to install the latest version."
-    TAG_VERSION="main"
+    TAG_VERSION="update_tensorstore"
 fi
 
-REPO_URL="https://github.com/TGSAI/mdio-cpp.git"
+# REPO_URL="https://github.com/TGSAI/mdio-cpp.git"
+REPO_URL="https://github.com/BrianMichell/mdio-cpp.git"
 REPO_DIR="mdio-cpp"
 
 # Clone the repository if it doesn't exist, otherwise pull the latest changes
@@ -55,7 +56,7 @@ if [ -d "$REPO_DIR" ]; then
     if [ -d "$REPO_DIR/.git" ]; then
         echo "Repository already exists. Fetching latest changes."
         cd $REPO_DIR
-        git checkout main
+        git checkout update_tensorstore
         git reset --hard
         git fetch
         git checkout $TAG_VERSION
