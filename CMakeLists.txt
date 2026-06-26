@@ -46,6 +46,7 @@ mdio_static_library(
   tensorstore::driver_zarr3_codec_transpose
   tensorstore::driver_zarr3_codec_zstd
   tensorstore::driver_zarr3_metadata
+  tensorstore::driver_zarr3_dtype
   tensorstore::driver_auto
   tensorstore::index_interval
   tensorstore::index_space_add_new_dims_op
@@ -144,13 +145,13 @@ mdio_static_library(
   tensorstore::internal_oauth2_oauth2_auth_provider
   tensorstore::internal_oauth2_oauth_utils
   tensorstore::internal_open_mode_spec
-  tensorstore::internal_os_aligned_alloc
   tensorstore::internal_os_error_code
   tensorstore::internal_os_file_descriptor
   tensorstore::internal_os_file_lister
   tensorstore::internal_os_file_lock
   tensorstore::internal_os_file_util
   tensorstore::internal_os_fork_detection
+  tensorstore::internal_os_hugepages
   tensorstore::internal_os_memory_region
   tensorstore::internal_os_wstring
   tensorstore::internal_path
@@ -172,7 +173,9 @@ mdio_static_library(
   tensorstore::internal_thread_thread_pool
   tensorstore::internal_tracing
   tensorstore::internal_unaligned_data_type_functions
-  tensorstore::internal_uri_utils
+  tensorstore::internal_uri_parse
+  tensorstore::internal_uri_path
+  tensorstore::internal_uri_percent_coder
   tensorstore::internal_utf8
   tensorstore::kvstore
   tensorstore::kvstore_byte_range
@@ -187,6 +190,7 @@ mdio_static_library(
   tensorstore::kvstore_auto_detect  # provides AutoDetectFormat (needed for file driver)
   # tensorstore::kvstore_file_file_resource  # driver - in drivers/
   # GCS support
+  tensorstore::kvstore_gcs
   tensorstore::kvstore_gcs_gcs_resource
   tensorstore::kvstore_gcs_http
   tensorstore::kvstore_gcs_http_gcs_resource
@@ -433,7 +437,7 @@ install(TARGETS zlib DESTINATION lib)
 
 add_library( zstd SHARED dummy.cc)
 TARGET_LINK_LIBRARIES_WHOLE_ARCHIVE ( zstd
-Zstd_zstd
+Zstd::Zstd
 )
 install(TARGETS zstd DESTINATION lib)
 

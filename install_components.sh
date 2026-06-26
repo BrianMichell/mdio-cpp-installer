@@ -5,10 +5,16 @@ INSTALL_DIR=$1
 
 
 mkdir -p $INSTALL_DIR/lib/drivers
-for file in $(cat ../drivers_list.txt); do
+for file in $(grep -vE '^\s*(#|$)' ../drivers_list.txt); do
    driver=$(find $SRC_DIR -name $file -print)
-   echo installing $driver...
-   cp $driver $INSTALL_DIR/lib/drivers
+   if [ -z "$driver" ]; then
+      echo "WARNING: driver archive not found: $file"
+      continue
+   fi
+   # Install lib<name>.alwayslink.a as lib<name>.a so consumers can use -l<name>.
+   dest=$(basename "$driver" | sed 's/\.alwayslink\.a$/.a/')
+   echo "installing $driver -> $dest"
+   cp "$driver" "$INSTALL_DIR/lib/drivers/$dest"
 done
 
 echo 'Installing .h include files...'
